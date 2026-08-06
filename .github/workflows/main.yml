@@ -1,0 +1,47 @@
+name: Generate Contribution Snake Animation
+
+on:
+  # Automatically run daily at midnight UTC
+  schedule:
+    - cron: "0 0 * * *"
+  
+  # Allow manual triggering directly from the GitHub Actions tab
+  workflow_dispatch:
+  
+  # Automatically update whenever changes are pushed to main or master
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  generate:
+    permissions: 
+      contents: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Generate snake game animation from GitHub contributions graph
+      - name: Generate github-contribution-grid-snake.svg
+        uses: Platane/snk/svg-only@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/github-contribution-grid-snake.svg
+            dist/github-contribution-grid-snake-dark.svg?palette=github-dark
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      # Push generated animation files to an independent 'output' branch
+      # This prevents automated commits from polluting your main commit history!
+      - name: Deploy animation to output branch
+        uses: crazy-max/ghaction-github-pages@v4
+        with:
+          target_branch: output
+          build_dir: dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
