@@ -36,6 +36,27 @@ Architecture-first applications focusing on high concurrency, distributed state,
 - **Tech Stack:** `TypeScript` `Node.js` `Express` `PostgreSQL` `Prisma` `React` `Tailwind CSS` `Vitest` `Render` `Vercel`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/routeflow-unthinkable) • [Live Production App](https://routeflow-unthinkable.vercel.app)
 
+```mermaid
+flowchart LR
+    A["Order Booking"] --> B["Volumetric Rate Engine"]
+    B --> C["Haversine & Workload Dispatcher"]
+    C --> D["Field Courier Agent"]
+    D --> E["Delivery State Machine (FSM)"]
+    E --> F[("PostgreSQL & Prisma Audit Log")]
+    E --> G["Pluggable Alerts (Twilio / Nodemailer)"]
+```
+
+<details>
+<summary><b>🔍 System Blueprint: Autonomous Dispatch & FSM Lifecycle</b></summary>
+
+<br/>
+
+1. **Spatial Proximity & Workload Scoring:** Evaluates candidate field agents within a bounding radius. Computes Haversine coordinates and applies dynamic load balancing:
+   $$\text{Score} = \text{Distance (km)} + (\text{Active Orders} \times 2.5)$$
+2. **Finite State Machine Enforcement:** Every parcel progresses through strict deterministic states: `ORDER_CREATED` $\rightarrow$ `DISPATCHED` $\rightarrow$ `IN_TRANSIT` $\rightarrow$ `OUT_FOR_DELIVERY` $\rightarrow$ `DELIVERED`. Illegal transitions trigger rollback exceptions.
+3. **Immutable Audit Provenance:** All transitions and location telemetry updates execute inside atomic Prisma database transactions, committing timestamped actor snapshots to PostgreSQL.
+</details>
+
 <br/>
 
 ### 2. Token-Based API Gateway
@@ -43,6 +64,29 @@ Architecture-first applications focusing on high concurrency, distributed state,
 - **System Architecture:** Replaces standard Requests-Per-Second (RPS) throttling with dynamic token-consumption rate limiting. Executes an atomic Token-Bucket algorithm natively in Redis via custom Lua scripts to guarantee $O(1)$ synchronization under heavy concurrency spikes, offloading token usage reconciliation asynchronously to MongoDB to preserve $<15\text{ms}$ proxy latency.
 - **Tech Stack:** `Node.js` `Express` `Redis` `Lua Scripting` `MongoDB` `Docker` `Docker Compose`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/LLM-API-Gateway-with-Token-Based-Rate-Limiting)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Client
+    participant GW as "Express Proxy"
+    participant Redis as "Redis (Lua Script)"
+    participant LLM as "GenAI Provider"
+    participant DB as "MongoDB"
+
+    Client->>GW: "Request + x-api-key"
+    GW->>Redis: "Token-Bucket Check & Deduction"
+    alt Quota Exceeded
+        Redis-->>GW: "429 Rate Limit"
+        GW-->>Client: "429 Too Many Requests"
+    else Authorized
+        Redis-->>GW: "Approved"
+        GW->>LLM: "Proxy Forwarding"
+        LLM-->>GW: "Response + Token Count"
+        GW-->>Client: "Completion Response"
+        GW-)DB: "Async Usage Logging (<15ms)"
+    end
+```
 
 <br/>
 
@@ -52,6 +96,15 @@ Architecture-first applications focusing on high concurrency, distributed state,
 - **Tech Stack:** `Java 17` `Spring Boot 3` `Spring Data JPA` `MySQL` `H2 Database` `React 18` `Vite` `JWT` `Docker`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/employee-management-system) • [Live Application](https://ultimatesmartems.netlify.app)
 
+```mermaid
+flowchart LR
+    Client["React 18 / Vite UI"] -->|"Stateless JWT Header"| Filter["Security & CORS Filter"]
+    Filter --> Controller["Spring Boot REST Layer"]
+    Controller --> Service["Transactional Service Layer"]
+    Service --> Repo["Spring Data JPA"]
+    Repo --> DB[("MySQL / Embedded H2 DB")]
+```
+
 <br/>
 
 ### 4. BDA CRM — Manufacturing Operations Platform
@@ -59,6 +112,14 @@ Architecture-first applications focusing on high concurrency, distributed state,
 - **System Architecture:** Role-governed operational dashboard providing drag-and-drop Kanban lead pipeline progression, structured client profile management, activity timeline tracking, and dynamic sales team performance aggregation.
 - **Tech Stack:** `MongoDB` `Express.js` `React` `Node.js` `Tailwind CSS` `Recharts` `JWT Auth`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/bda-crm-module) • [Live Application](https://bda-crm-module.vercel.app)
+
+```mermaid
+flowchart LR
+    User["Enterprise Sales Personas"] -->|"RBAC Session"| UI["React Kanban Dashboard"]
+    UI -->|"Authenticated REST Calls"| Express["Node.js / Express Server"]
+    Express -->|"Indexing & Pipeline Aggregation"| Mongo[("MongoDB Document Store")]
+    Express -->|"Performance Analytics"| Recharts["Real-Time Funnel Metrics"]
+```
 
 ---
 
@@ -73,6 +134,26 @@ Analytical systems evaluating real-world and synthetic datasets using statistica
 - **Tech Stack:** `Python` `PostgreSQL` `T-SQL` `Pandas` `XGBoost` `SHAP` `Power BI` `Star Schema`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/E-commerce-Sales-and-Customer-Analytics)
 
+```mermaid
+flowchart LR
+    Raw["Raw Multi-Channel Data"] --> Prep["Pandas Cleaning & Imputation"]
+    Prep --> WH["Dual SQL Warehousing (Postgres / T-SQL)"]
+    WH --> Star["Kimball Star Schema"]
+    Star --> ML["XGBoost Churn Modeling & SHAP"]
+    Star --> RFM["RFM Segmentation & Cohorts"]
+    ML & RFM --> BI["Power BI Executive Cockpits"]
+```
+
+<details>
+<summary><b>🔍 System Blueprint: Star-Schema Dimensional Modeling & Churn Evaluation</b></summary>
+
+<br/>
+
+1. **Dimensional Data Modeling:** Deconstructed relational logs into an enterprise star schema featuring a central `fact_orders` table bound to conformed dimensions (`dim_customers`, `dim_products`, `dim_dates`, and `dim_channels`) to accelerate complex analytical joins across PostgreSQL and T-SQL.
+2. **Behavioral RFM Segmentation:** Quantified customer equity by dynamically ranking Recency, Frequency, and Monetary metrics into percentiles, isolating high-value champions from at-risk accounts.
+3. **Predictive Churn Engine:** Trained XGBoost classification models on historical purchase intervals. Applied SHAP (SHapley Additive exPlanations) values to isolate the primary feature drivers triggering customer churn across transaction cycles.
+</details>
+
 <br/>
 
 ### 2. Borrower Default Risk Analytics on Home Credit Data
@@ -82,6 +163,15 @@ Analytical systems evaluating real-world and synthetic datasets using statistica
 - **Tech Stack:** `Python` `Pandas` `SQL (SQLite CTEs & Window Functions)` `Power BI` `Exploratory Data Analysis`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/Borrower-Default-Risk-Analytics-on-Home-Credit-Data)
 
+```mermaid
+flowchart LR
+    Data["307,511 Loan Records"] --> Clean["Pandas Imputation & Imbalance Fix"]
+    Clean --> SQL["SQLite Engine (CTEs & Window Functions)"]
+    SQL --> Risk["Cohort Default Risk Analysis"]
+    Risk --> Policy["Underwriting Threshold Discovery"]
+    Policy --> Dash["Power BI Risk Cockpit"]
+```
+
 <br/>
 
 ### 3. Corona Sentiment Analysis & NLP Research Archive
@@ -89,6 +179,15 @@ Analytical systems evaluating real-world and synthetic datasets using statistica
 - **Analytical Methodology:** Analyzes large longitudinal text corpora using classical lexicon-based sentiment scoring, multi-class emotion classification models, and fine-tuned BERT transformer embeddings across distinct outbreak waves, accompanied by an interactive exhibition web interface.
 - **Tech Stack:** `Python` `BERT` `Transformers` `NLTK` `Scikit-learn` `Jupyter Notebooks` `HTML/CSS`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/Sentimental_Analysis_Corona)
+
+```mermaid
+flowchart LR
+    Corpus["Public Text Corpus"] --> Pre["NLP Cleaning & Tokenization"]
+    Pre --> Lex["Lexicon & Emotion Scoring"]
+    Pre --> BERT["Fine-Tuned BERT Transformer"]
+    Lex & BERT --> Comp["Cross-Wave Sentiment Evaluation"]
+    Comp --> Web["Exhibition Web Interface"]
+```
 
 ---
 
@@ -103,6 +202,26 @@ Systems integrating machine learning, document intelligence, and generative mode
 - **Tech Stack:** `Python` `FastAPI` `XGBoost` `SHAP` `Scikit-learn` `React` `Recharts` `SQLite`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/honeywell-qcs-demo)
 
+```mermaid
+flowchart LR
+    Sim["FOPDT Physics Simulator"] --> Stream["transitions.csv Telemetry"]
+    Stream --> XGB["XGBoost (Stabilization Regressor & Classifier)"]
+    XGB --> SHAP["SHAP Attribution & KNN Engine"]
+    SHAP --> API["FastAPI REST Services"]
+    API --> HMI["ISA-101 React Dashboard (Recharts)"]
+    HMI -->|"Operator Decision"| Audit[("SQLite Audit Trail")]
+```
+
+<details>
+<summary><b>🔍 System Blueprint: Industrial FOPDT Simulation & Closed-Loop Attribution</b></summary>
+
+<br/>
+
+1. **FOPDT Physical Modeling:** Synthesizes realistic non-linear paper machine dynamics governed by First-Order Plus Dead Time differential equations, generating stock flow, caliper, and basis-weight transitions.
+2. **Dual-Model Inference:** Runs an XGBoost classifier to compute real-time probability of deviation failure alongside an XGBoost regressor forecasting the time required to reach target basis-weight stabilization.
+3. **Closed-Loop Operator Feedback:** Operators evaluate AI recommendations (speed, stock flow trims) on an ISA-101 compliant interface. Operator accept/reject decisions are permanently recorded into an SQLite audit log to support continuous model re-training.
+</details>
+
 <br/>
 
 ### 2. Fact Knowledge Layer — Document Intelligence Engine
@@ -111,6 +230,15 @@ Systems integrating machine learning, document intelligence, and generative mode
 - **Tech Stack:** `Python 3.12` `Google Gemini API` `Vector Embeddings` `Knowledge Graphs` `PyMuPDF` `NLP`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/SuperJoin-Knowledge-Layer)
 
+```mermaid
+flowchart LR
+    PDF["Unstructured PDF Input"] --> PyMu["PyMuPDF Coordinate Extraction"]
+    PyMu --> LLM["Gemini Evidence Grounding"]
+    LLM --> Vec["Vector Embeddings"]
+    Vec --> Graph["Knowledge Graph Engine (NetworkX)"]
+    Graph --> Rec["Corroboration & Conflict Reconciliation"]
+```
+
 <br/>
 
 ### 3. Dictation Postcards — LLM-Powered Generative Experience
@@ -118,6 +246,15 @@ Systems integrating machine learning, document intelligence, and generative mode
 - **AI Architecture:** Captures voice audio via the Web Speech API and routes transcription to LLM structured prompting pipelines (Google Gemini / OpenAI). Extracts psychological mood attributes, custom four-color palettes, and poetic micro-copy, dynamically rendered into hand-drawn canvas art using rough.js alongside 3D card flips and persistent corkboard galleries.
 - **Tech Stack:** `TypeScript` `Next.js` `Web Speech API` `Google Gemini API` `Rough.js` `Tailwind CSS`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/dictation-postcards)
+
+```mermaid
+flowchart LR
+    Voice["Dictated Audio"] --> Speech["Web Speech API"]
+    Speech --> Prompt["Structured LLM Prompting (Gemini / OpenAI)"]
+    Prompt --> Params["Mood, Palette & Poetic Caption"]
+    Params --> Rough["Rough.js Algorithmic Canvas"]
+    Rough --> Render["3D Card Flip & Gallery Persistence"]
+```
 
 ---
 
@@ -131,6 +268,27 @@ High-pressure competitive prototypes developed for national and enterprise hacka
 - **Tech Stack:** `Node.js` `Express` `React` `Tailwind CSS` `Anthropic Claude API` `SQLite` `SHA-256 Attestation` `Zod`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/loan-data-verification-copilot) • [Live Production App](https://loan-data-verification-copilot-alpha.vercel.app/)
 
+```mermaid
+flowchart LR
+    Tape["Raw Mortgage CSV Tape"] --> Norm["Ingestion & Lineage Normalizer"]
+    Norm --> Rules["15-Rule Validation Engine (DPD, Limits, Triplets)"]
+    Rules --> AI["Anthropic Claude Advisory Layer"]
+    AI --> Review["Human Underwriter Approval Queue"]
+    Review --> Hash["SHA-256 Canonical Attestation"]
+    Hash --> Seal[("Immutable Verified Records Ledger")]
+```
+
+<details>
+<summary><b>🔍 System Blueprint: Deterministic Validation, AI Advisory & SHA-256 Attestation</b></summary>
+
+<br/>
+
+1. **Byte-Level Lineage:** Preserves raw input rows verbatim in `RawLoanRecord` while mapping into a strongly typed `NormalizedLoan` schema, ensuring absolute traceability back to source files.
+2. **Deterministic 15-Rule Engine:** Evaluates loan records against critical business bounds (interest rate usury thresholds, Days Past Due servicing matrices, and borrower duplication checks). Fails decisively on logic errors prior to human review.
+3. **Advisory AI Isolation:** Employs Anthropic Claude to generate human-readable failure explanations and reconciliation proposals, strictly isolated as non-binding suggestions (`accepted_by_reviewer = null` until signed off).
+4. **Cryptographic Attestation:** Once verified by an underwriter, record fields are normalized via canonical JSON sorting (`canonicalStringify`) and hashed into a tamper-evident SHA-256 fingerprint (`recordHash`), verifiable via an integrated forensic verification script.
+</details>
+
 <br/>
 
 ### 2. AI/NLP Financial Risk Engine — S&P Global × CRISIL Campus Hackathon 2026
@@ -138,6 +296,15 @@ High-pressure competitive prototypes developed for national and enterprise hacka
 - **Engineering Highlights:** Ingests unstructured financial news and corporate disclosures, computes entity-level sentiment and macro vulnerability indicators using financial NLP transformers, and translates textual signals into dynamic portfolio risk weight adjustments.
 - **Tech Stack:** `Python` `FinBERT` `Transformers` `Pandas` `FastAPI` `Streamlit` `Quantitative Risk Modeling`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/Vellore-Institute-Of-Technology-Bhopal---Mridul-Rajgaria---hackathon)
+
+```mermaid
+flowchart LR
+    Feeds["Financial News & Filings"] --> Pre["Document Parsing Pipeline"]
+    Pre --> FinBERT["FinBERT / Transformer NLP Models"]
+    FinBERT --> Signals["Entity-Level Sentiment & Macro Vectors"]
+    Signals --> Port["Dynamic Portfolio Risk Weight Adjustment"]
+    Port --> UI["FastAPI & Streamlit Signal Monitor"]
+```
 
 <br/>
 
@@ -147,6 +314,14 @@ High-pressure competitive prototypes developed for national and enterprise hacka
 - **Implementation Status:** Hackathon architectural proposal and design-stage proof of concept utilizing simulated participant nodes; not an integrated production banking deployment.
 - **Tech Stack:** `Cryptographic Protocols` `Digital Signatures` `System Architecture Specification` `UPI Protocol Analysis`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/mandateguard)
+
+```mermaid
+flowchart LR
+    User["Subscriber Revocation Request"] --> Remitter["Remitter Bank Node"]
+    Remitter -->|"Cryptographic Revocation Token"| Beneficiary["Beneficiary Bank Node"]
+    Beneficiary -->|"Dual-Signed Attestation Receipt"| Ledger["Shared Audit Trail Window"]
+    Ledger --> Mandate["UPI AutoPay Execution Disablement"]
+```
 
 ---
 
