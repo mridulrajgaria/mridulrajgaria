@@ -32,6 +32,9 @@ Architecture-first applications focusing on high concurrency, distributed state,
 - **Tech Stack:** `TypeScript` `Node.js` `Express` `PostgreSQL` `Prisma` `React` `Tailwind CSS` `Vitest` `Render` `Vercel`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/routeflow-unthinkable) • [Live Production App](https://routeflow-unthinkable.vercel.app)
 
+<details>
+<summary><b>📐 View System Architecture Diagram</b></summary>
+
 ```mermaid
 flowchart LR
     A["Order Booking"] --> B["Volumetric Rate Engine"]
@@ -41,6 +44,7 @@ flowchart LR
     E --> F[("PostgreSQL & Prisma Audit Log")]
     E --> G["Pluggable Alerts (Twilio / Nodemailer)"]
 ```
+</details>
 
 <details>
 <summary><b>🔍 System Blueprint: Autonomous Dispatch & FSM Lifecycle</b></summary>
@@ -60,6 +64,9 @@ flowchart LR
 - **System Architecture:** Replaces standard Requests-Per-Second (RPS) throttling with dynamic token-consumption rate limiting. Executes an atomic Token-Bucket algorithm natively in Redis via custom Lua scripts to guarantee $O(1)$ synchronization under heavy concurrency spikes, offloading token usage reconciliation asynchronously to MongoDB to preserve $<15\text{ms}$ proxy latency.
 - **Tech Stack:** `Node.js` `Express` `Redis` `Lua Scripting` `MongoDB` `Docker` `Docker Compose`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/LLM-API-Gateway-with-Token-Based-Rate-Limiting)
+
+<details>
+<summary><b>📐 View System Architecture Diagram</b></summary>
 
 ```mermaid
 sequenceDiagram
@@ -83,6 +90,7 @@ sequenceDiagram
         GW-)DB: "Async Usage Logging (<15ms)"
     end
 ```
+</details>
 
 <br/>
 
@@ -92,6 +100,9 @@ sequenceDiagram
 - **Tech Stack:** `Java 17` `Spring Boot 3` `Spring Data JPA` `MySQL` `H2 Database` `React 18` `Vite` `JWT` `Docker`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/employee-management-system) • [Live Application](https://ultimatesmartems.netlify.app)
 
+<details>
+<summary><b>📐 View System Architecture Diagram</b></summary>
+
 ```mermaid
 flowchart LR
     Client["React 18 / Vite UI"] -->|"Stateless JWT Header"| Filter["Security & CORS Filter"]
@@ -100,6 +111,7 @@ flowchart LR
     Service --> Repo["Spring Data JPA"]
     Repo --> DB[("MySQL / Embedded H2 DB")]
 ```
+</details>
 
 <br/>
 
@@ -109,6 +121,9 @@ flowchart LR
 - **Tech Stack:** `MongoDB` `Express.js` `React` `Node.js` `Tailwind CSS` `Recharts` `JWT Auth`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/bda-crm-module) • [Live Application](https://bda-crm-module.vercel.app)
 
+<details>
+<summary><b>📐 View System Architecture Diagram</b></summary>
+
 ```mermaid
 flowchart LR
     User["Enterprise Sales Personas"] -->|"RBAC Session"| UI["React Kanban Dashboard"]
@@ -116,6 +131,7 @@ flowchart LR
     Express -->|"Indexing & Pipeline Aggregation"| Mongo[("MongoDB Document Store")]
     Express -->|"Performance Analytics"| Recharts["Real-Time Funnel Metrics"]
 ```
+</details>
 
 ---
 
@@ -130,6 +146,9 @@ Analytical systems evaluating real-world and synthetic datasets using statistica
 - **Tech Stack:** `Python` `PostgreSQL` `T-SQL` `Pandas` `XGBoost` `SHAP` `Power BI` `Star Schema`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/E-commerce-Sales-and-Customer-Analytics)
 
+<details>
+<summary><b>📐 View System Architecture Diagram</b></summary>
+
 ```mermaid
 flowchart LR
     Raw["Raw Multi-Channel Data"] --> Prep["Pandas Cleaning & Imputation"]
@@ -139,6 +158,7 @@ flowchart LR
     Star --> RFM["RFM Segmentation & Cohorts"]
     ML & RFM --> BI["Power BI Executive Cockpits"]
 ```
+</details>
 
 <details>
 <summary><b>🔍 System Blueprint: Star-Schema Dimensional Modeling & Churn Evaluation</b></summary>
@@ -159,6 +179,9 @@ flowchart LR
 - **Tech Stack:** `Python` `Pandas` `SQL (SQLite CTEs & Window Functions)` `Power BI` `Exploratory Data Analysis`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/Borrower-Default-Risk-Analytics-on-Home-Credit-Data)
 
+<details>
+<summary><b>📐 View System Architecture Diagram</b></summary>
+
 ```mermaid
 flowchart LR
     Data["307,511 Loan Records"] --> Clean["Pandas Imputation & Imbalance Fix"]
@@ -167,6 +190,7 @@ flowchart LR
     Risk --> Policy["Underwriting Threshold Discovery"]
     Policy --> Dash["Power BI Risk Cockpit"]
 ```
+</details>
 
 <br/>
 
@@ -176,6 +200,9 @@ flowchart LR
 - **Tech Stack:** `Python` `BERT` `Transformers` `NLTK` `Scikit-learn` `Jupyter Notebooks` `HTML/CSS`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/Sentimental_Analysis_Corona)
 
+<details>
+<summary><b>📐 View System Architecture Diagram</b></summary>
+
 ```mermaid
 flowchart LR
     Corpus["Public Text Corpus"] --> Pre["NLP Cleaning & Tokenization"]
@@ -184,6 +211,7 @@ flowchart LR
     Lex & BERT --> Comp["Cross-Wave Sentiment Evaluation"]
     Comp --> Web["Exhibition Web Interface"]
 ```
+</details>
 
 ---
 
@@ -198,6 +226,9 @@ Systems integrating machine learning, document intelligence, and generative mode
 - **Tech Stack:** `Python` `FastAPI` `XGBoost` `SHAP` `Scikit-learn` `React` `Recharts` `SQLite`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/honeywell-qcs-demo)
 
+<details>
+<summary><b>📐 View System Architecture Diagram</b></summary>
+
 ```mermaid
 flowchart LR
     Sim["FOPDT Physics Simulator"] --> Stream["transitions.csv Telemetry"]
@@ -207,6 +238,7 @@ flowchart LR
     API --> HMI["ISA-101 React Dashboard (Recharts)"]
     HMI -->|"Operator Decision"| Audit[("SQLite Audit Trail")]
 ```
+</details>
 
 <details>
 <summary><b>🔍 System Blueprint: Industrial FOPDT Simulation & Closed-Loop Attribution</b></summary>
@@ -226,6 +258,9 @@ flowchart LR
 - **Tech Stack:** `Python 3.12` `Google Gemini API` `Vector Embeddings` `Knowledge Graphs` `PyMuPDF` `NLP`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/SuperJoin-Knowledge-Layer)
 
+<details>
+<summary><b>📐 View System Architecture Diagram</b></summary>
+
 ```mermaid
 flowchart LR
     PDF["Unstructured PDF Input"] --> PyMu["PyMuPDF Coordinate Extraction"]
@@ -234,6 +269,7 @@ flowchart LR
     Vec --> Graph["Knowledge Graph Engine (NetworkX)"]
     Graph --> Rec["Corroboration & Conflict Reconciliation"]
 ```
+</details>
 
 <br/>
 
@@ -243,6 +279,9 @@ flowchart LR
 - **Tech Stack:** `TypeScript` `Next.js` `Web Speech API` `Google Gemini API` `Rough.js` `Tailwind CSS`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/dictation-postcards)
 
+<details>
+<summary><b>📐 View System Architecture Diagram</b></summary>
+
 ```mermaid
 flowchart LR
     Voice["Dictated Audio"] --> Speech["Web Speech API"]
@@ -251,6 +290,7 @@ flowchart LR
     Params --> Rough["Rough.js Algorithmic Canvas"]
     Rough --> Render["3D Card Flip & Gallery Persistence"]
 ```
+</details>
 
 ---
 
@@ -264,6 +304,9 @@ High-pressure competitive prototypes developed for national and enterprise hacka
 - **Tech Stack:** `Node.js` `Express` `React` `Tailwind CSS` `Anthropic Claude API` `SQLite` `SHA-256 Attestation` `Zod`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/loan-data-verification-copilot) • [Live Production App](https://loan-data-verification-copilot-alpha.vercel.app/)
 
+<details>
+<summary><b>📐 View System Architecture Diagram</b></summary>
+
 ```mermaid
 flowchart LR
     Tape["Raw Mortgage CSV Tape"] --> Norm["Ingestion & Lineage Normalizer"]
@@ -273,6 +316,7 @@ flowchart LR
     Review --> Hash["SHA-256 Canonical Attestation"]
     Hash --> Seal[("Immutable Verified Records Ledger")]
 ```
+</details>
 
 <details>
 <summary><b>🔍 System Blueprint: Deterministic Validation, AI Advisory & SHA-256 Attestation</b></summary>
@@ -293,6 +337,9 @@ flowchart LR
 - **Tech Stack:** `Python` `FinBERT` `Transformers` `Pandas` `FastAPI` `Streamlit` `Quantitative Risk Modeling`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/Vellore-Institute-Of-Technology-Bhopal---Mridul-Rajgaria---hackathon)
 
+<details>
+<summary><b>📐 View System Architecture Diagram</b></summary>
+
 ```mermaid
 flowchart LR
     Feeds["Financial News & Filings"] --> Pre["Document Parsing Pipeline"]
@@ -301,6 +348,7 @@ flowchart LR
     Signals --> Port["Dynamic Portfolio Risk Weight Adjustment"]
     Port --> UI["FastAPI & Streamlit Signal Monitor"]
 ```
+</details>
 
 <br/>
 
@@ -311,6 +359,9 @@ flowchart LR
 - **Tech Stack:** `Cryptographic Protocols` `Digital Signatures` `System Architecture Specification` `UPI Protocol Analysis`
 - **Links:** [GitHub Repository](https://github.com/mridulrajgaria/mandateguard)
 
+<details>
+<summary><b>📐 View System Architecture Diagram</b></summary>
+
 ```mermaid
 flowchart LR
     User["Subscriber Revocation Request"] --> Remitter["Remitter Bank Node"]
@@ -318,6 +369,7 @@ flowchart LR
     Beneficiary -->|"Dual-Signed Attestation Receipt"| Ledger["Shared Audit Trail Window"]
     Ledger --> Mandate["UPI AutoPay Execution Disablement"]
 ```
+</details>
 
 ---
 
