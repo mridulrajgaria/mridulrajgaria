@@ -14,6 +14,10 @@ on:
       - main
       - master
 
+concurrency:
+  group: snake-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   generate:
     permissions: 
@@ -23,10 +27,10 @@ jobs:
     
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Generate snake game animation from GitHub contributions graph
-      - name: Generate github-contribution-grid-snake.svg
+      - name: Generate contribution grid snake SVGs
         uses: Platane/snk/svg-only@v3
         with:
           github_user_name: ${{ github.repository_owner }}
@@ -36,8 +40,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
-      # Push generated animation files to an independent 'output' branch
-      # This prevents automated commits from polluting your main commit history!
+      # Deploy SVGs to the 'output' branch
       - name: Deploy animation to output branch
         uses: crazy-max/ghaction-github-pages@v4
         with:
