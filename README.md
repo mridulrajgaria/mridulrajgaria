@@ -7,11 +7,15 @@ B.Tech Computer Science and Engineering, Vellore Institute of Technology • Cla
 
 ---
 
-### About Me
+### ✦ A Little About Me
 
-I focus on building software that behaves predictably under real-world constraints. My work centers on architecting resilient backend systems, building deterministic validation layers around non-deterministic AI models, and translating unstructured or high-volume data streams into actionable operational platforms.
+> *Somewhere between a failing API request, an inconsistent dataset, and a model that needs explaining, you'll probably find me working on something.*
 
-Whether implementing Redis-backed atomic token throttling to protect GenAI infrastructure from load spikes, designing cryptographic attestation pipelines for loan tape verification, or engineering autonomous dispatch engines with finite state machines, I prioritize clear separation of concerns, test coverage, and transparent data flow over superficial complexity.
+I'm **Mridul Rajgaria**, a 2027 B.Tech Computer Science and Engineering student at **Vellore Institute of Technology (VIT)**. I enjoy exploring problems across software engineering, data science, and applied AI — especially the ones that require more than an obvious solution.
+
+I like understanding what's happening beneath the surface, questioning assumptions, and turning complex ideas into systems that actually work.
+
+> **Curiosity starts the build. Engineering makes it work.**
 
 ---
 
